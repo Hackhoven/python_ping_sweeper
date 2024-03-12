@@ -14,7 +14,7 @@ To use the Ping Sweeper, follow these steps:
 
 1. Open a terminal or command prompt.
 2. Clone this repository to your local machine: `git clone https://github.com/Hackhoven/python_ping_sweeper.git`
-3. Navigate to the directory containing the script. `cd Hackhoven/python_ping_sweeper`
+3. Navigate to the directory containing the script: `cd Hackhoven/python_ping_sweeper`
 4. Run the script using the command `python3 ping_sweeper.py <IP range>`, where `<IP range>` specifies the range of IP addresses to scan (e.g., `192.168.1`).
 5. View the output to identify online and offline hosts within the specified IP range.
 
