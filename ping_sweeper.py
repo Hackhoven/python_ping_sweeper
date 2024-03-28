@@ -2,41 +2,41 @@
 
 import sys
 import subprocess
-import platform
 import concurrent.futures
+import platform
 import ipaddress
 import logging
 
+
 def ping_sweeper(ip):
-    if platform.system().lower() == 'windows':
-        cmd = ['ping', '-n', '1', '-w', '1000']  # 1 second timeout for Windows
+    if platform.system().lower() == "windows":
+        cmd = ['ping', '-n', '1', '-w', '1000']
     else:
-        cmd = ['ping', '-c', '1', '-W', '1']     # 1 second timeout for Unix-like systems
+        cmd = ['ping', '-c', '1', '-W', '1']
 
     try:
         result = subprocess.run(cmd + [str(ip)], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        if "Destination host unreachable" in result.stdout:
-            return
-        else:
+        if "Destination host unreachable" not in result.stdout:
             logging.info(f"The host {ip} is up.")
+    
+    except subprocess.CalledProcessError: 
+        pass    # Suppress error messages for unreachable hosts
 
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Error occurred with {ip}: {e}")
-
+    
 def main():
-    logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
     if len(sys.argv) != 2:
-        print("Usage: python3 ping_sweeper.py <IP range>")
+        print("Command usage: python3 ping_sweeper.py <network ip address>")
         sys.exit(1)
 
-    ip_range = sys.argv[1]
+    net_ip_address = sys.argv[1]  #192.168.100.0/24
 
     try:
-        network = ipaddress.ip_network(ip_range)
+        network = ipaddress.ip_network(net_ip_address)    #192.168.100.0-255
     except ValueError as e:
-        print("Invalid IP range:", e)
+        print("Invalid IP range: ", e)
         sys.exit(1)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=32) as executor:
@@ -45,4 +45,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
